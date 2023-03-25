@@ -51,7 +51,7 @@ function Home() {
                 </div>
                 <div className="row">
                     <div className="pt-1 col-4">
-                        <a href="#!" onClick={logout} >Update Voters</a>
+                        <a href="#!" onClick={updateVoter} >Update Voters</a>
                     </div>
                     <div className="pt-1 col-8"></div>
                 </div>

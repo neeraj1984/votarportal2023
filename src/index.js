@@ -7,6 +7,8 @@ import Login from "./user/Login";
 import Home from "./voter/Home";
 import SignUp from "./user/SignUp";
 import AddVoter from './voter/AddVoter';
+import UpdateVoter from './voter/updateVoter';
+import DeleteVoter from './voter/DeleteVoter';
 import VoterList from './voter/voterList';
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -23,6 +25,8 @@ root.render(
       <Route path="home" element={<Home />} />
       <Route path="signup" element={<SignUp />} />
       <Route path="addVoter" element={<AddVoter />} />
+      <Route path="updateVoter" element={<UpdateVoter />} />
+      <Route path="DeleteVoter" element={<DeleteVoter />} />
       <Route path="voterList" element={<VoterList />} />
     </Routes> 
   </BrowserRouter> 
