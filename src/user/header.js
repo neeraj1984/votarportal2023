@@ -3,32 +3,70 @@ import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import {useState,useEffect} from "react";
 
-const API_URL = "http://localhost:8080/api/auth/";
+function Header(){
+    const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("user"));
+    
+    function invalidateToken(){
+      const logoutURL = "http://localhost:8080/api/auth/logout";
+      const headers = {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': true,
+          Authorization: "Bearer " + user.accessToken
+      }
 
-class AuthService {
-  login(username, password) {
-    return axios
-      .post(API_URL + "signin", { username, password })
+      axios.get(logoutURL,{headers:headers})
       .then((response) => {
-        if (response.data.accessToken) {
-       localStorage.setItem("user", JSON.stringify(response.data));
-        }
-
-        return response.data;
-      });
+          //alert(response.data);
+      })
+      .catch(error => (console.log("error")) )
   }
+    
+    const logout = () => {
+        invalidateToken();
+        localStorage.removeItem('user');
+        navigate("/login", {replace:true});
+      };
 
-  logout() {
-    localStorage.removeItem("user");
-  }
+    const homePage = () => {
+        navigate("/home", {replace:true});
+      };
 
-  register(username, email, password) {
-    return axios.post(API_URL + "signup", {
-      username,
-      email,
-      password,
-    });
-  }
+    const[currentPage, setCurrentPage] = useState("");
+
+    useEffect(() => {
+        setCurrentPage(window.location.pathname);
+      },[]);
+
+    return(
+           
+    <div className="row">
+        <div className="pt-1 col-8">
+            <h4> Welcome {user.username}</h4>                        
+        </div>        
+           
+        <div className="pt-1 col-2">           
+            {
+            //Immediately Invoked Function Expression (IIFE)
+            (() => {
+                if (currentPage !== '/home'){
+                  return (
+                    <a className="text-muted" href="#!" style={{marginRight:"20px"}} onClick={homePage} >Home</a>
+                  )
+              }             
+              return null;
+            })()
+            }           
+        </div>
+                   
+        
+        <div className="pt-1 col-2">
+            <a className="text-muted" href="#!" style={{marginRight:"20px"}} onClick={logout} >Log out</a>
+        </div>
+    </div>
+                
+    )
 }
 
-export default new AuthService();
+
+export default Header;
