@@ -18,6 +18,7 @@ function Header(){
       axios.get(logoutURL,{headers:headers})
       .then((response) => {
           //alert(response.data);
+          //alert("test");
       })
       .catch(error => (console.log("error")) )
   }
