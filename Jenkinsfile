@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         maven 'Maven 3.3.9'
-        jdk 'JDK 11'
+        jdk 'JDK 17'
     }
     environment {
         CATALINA_HOME = "C:\\apache-tomcat-10.1.28"
