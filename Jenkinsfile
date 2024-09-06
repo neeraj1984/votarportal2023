@@ -5,7 +5,7 @@ pipeline {
         jdk 'JDK 11'
     }
     environment {
-        CATALINA_HOME = "C:\apache-tomcat-10.1.28"
+        CATALINA_HOME = "C:\\apache-tomcat-10.1.28"
     }
     stages {
         stage('Checkout') {
