@@ -1,0 +1,21 @@
+/* Three image containers (use 25% for four, and 50% for two, etc) */
+.column {
+    float: left;
+    width: 20%;
+    padding: 5px;
+  }
+  
+  /* Clear floats after image containers */
+  .home-item::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+
+  .hoverBox{
+    transition: opacity 0.6s ease;
+  }
+
+  .home-item:hover > :not(:hover){
+    opacity: 0.4;
+  }

@@ -5,6 +5,7 @@ import "../css/login.css";
 import lotus from "../img/lotus.jpeg";
 import axios from "axios";
 import AuthContext from "../store/auth-context";
+import Logo from "../user/Logo";
 
 
 function Login(){
@@ -101,12 +102,9 @@ const loginSubmit = (e) => {
                     <div className="row g-0">
                       <div className="col-lg-6">
                         <div className="card-body p-md-5 mx-md-4">
-
-                          <div className="text-center">
-                            <img src={lotus}
-                              style={{width: "185px"}} alt="logo" />
-                            <h4 className="mt-1 mb-5 pb-1">Voters Information System</h4>
-                          </div>
+                          
+                          <Logo></Logo>
+                          
 
                           <form id="loginform" onSubmit={loginSubmit}> 
                             <p>Please login to your account</p>

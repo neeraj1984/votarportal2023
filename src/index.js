@@ -10,6 +10,7 @@ import AddVoter from './voter/AddVoter';
 import UpdateVoter from './voter/updateVoter';
 import DeleteVoter from './voter/DeleteVoter';
 import VoterList from './voter/voterList';
+import WebService from './utils/WebService';
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -28,6 +29,7 @@ root.render(
       <Route path="updateVoter" element={<UpdateVoter />} />
       <Route path="DeleteVoter" element={<DeleteVoter />} />
       <Route path="voterList" element={<VoterList />} />
+      <Route path="WebService" element={<WebService />} />
     </Routes> 
   </BrowserRouter> 
 </React.StrictMode>
