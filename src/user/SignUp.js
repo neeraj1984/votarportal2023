@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Navigate } from 'react-router-dom';
 import axios from "axios";
 import "../css/signup.css";
 
@@ -12,9 +13,7 @@ const headers = {
 
 
 class SignUp extends Component {
-
-
-
+    //class component can not use useNavigate hook rather Navigate component
     constructor(props) {
         super(props);
         this.handleRegister   = this.handleRegister.bind(this);
@@ -33,7 +32,8 @@ class SignUp extends Component {
           usernameError: "",
           passwordError: "",
           firstNameError: "",
-          lastNameError: ""
+          lastNameError: "",
+          redirectToLogin: false, 
         };
       }
 
@@ -61,6 +61,7 @@ class SignUp extends Component {
         });
       }
 
+
     handleRegister(e) {
 
         const data = {
@@ -83,8 +84,13 @@ class SignUp extends Component {
                 signUpURL, data,
                 {headers:headers},
               ).then((response) => {
-                  alert(response.data.message);
-                  
+                this.setState({ 
+                  redirectToLogin: true, 
+                });   
+                alert(response.data.message + " You will be redirected to login page to Sign in.");
+                  //this.props.history.push('/login');
+                  //this.props.navigate('/login'); 
+                               
           }).catch(error => {
             //alert(error);
             if (!error.response) { //network error handling
@@ -135,7 +141,12 @@ handleValidation(e) {
 
 
     render() {
-        const { message } = this.props;
+        const { message} = this.props;
+        const { redirectToLogin } = this.state;
+        // If "redirectToLogin" is true, render Navigate to redirect to /login
+        if (redirectToLogin) {
+          return <Navigate to="/login" />;
+        }
         return (
 
             <div className="col-md-12">
