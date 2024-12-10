@@ -6,6 +6,7 @@ import lotus from "../img/lotus.jpeg";
 import axios from "axios";
 import AuthContext from "../store/auth-context";
 import Logo from "../user/Logo";
+import Loader from "../utils/Loader";
 
 
 function Login(){
@@ -21,6 +22,7 @@ const [emailError, setemailError] = useState("");
 const [loginServiceError, setloginServiceError] = useState("");
 const navigate = useNavigate();
 const authCxt = useContext(AuthContext);
+const [isLoading, setIsLoading] = useState(false);
 
 const headers = {
   'Content-Type': 'application/json',
@@ -34,24 +36,27 @@ const data = {
 }
 
 function invokeLoginService(){
-
+  setIsLoading(true);
   axios.post(
           loginURL, data,
           {headers:headers},
         ).then((response) => {
             if(response.data.accessToken !== ""){
               //authCxt.login(response.data.token);
+              setIsLoading(false);
               localStorage.setItem("user", JSON.stringify(response.data));
               navigate("/home", {replace:true});
             }else{
               alert("some error occurred");
+              setIsLoading(false);
             }
     }).catch(error => {
       if(error.response.status == 401){
         setloginServiceError("Bad credentials.");
       }else{
         setloginServiceError("Some error has occurred.");
-      }     
+      } 
+      setIsLoading(false);    
     });
       
 }
@@ -59,9 +64,18 @@ function invokeLoginService(){
 const loginSubmit = (e) => {
     e.preventDefault();
     var valid = handleValidation();
+    /*
     if(valid){
-      invokeLoginService();
-    }    
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false); // Hide the loader after 2-3 seconds
+        invokeLoginService();
+      }, 2000); // 2 seconds delay      
+    } 
+    */
+   if(valid){
+    invokeLoginService();
+   }   
   };
 
   const handleValidation = (event) => {
@@ -131,6 +145,8 @@ const loginSubmit = (e) => {
                             <small id="loginErrorSection" className="text-danger form-text" style={{marginLeft:"10px"}}>
                                   {loginServiceError}
                                 </small>
+
+                            {isLoading && <Loader/>} {/* Conditionally render the loader */}
 
                             <div className="text-center pt-1 mb-5 pb-1">
                               {/*
