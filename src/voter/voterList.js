@@ -103,7 +103,7 @@ const VoterList = () => {
 
     return (
 
-        <div className="container">
+    <div className="container">
         <Header></Header>
         <div className ="row mb-4"></div>
         <h2>Voter List</h2>
