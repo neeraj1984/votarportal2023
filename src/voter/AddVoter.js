@@ -6,7 +6,11 @@ import Header from "../user/header";
 import VoterDOB from "./VoterDOB";
 import ReactSelect from 'react-select';
 import SuccessAlert from "../utils/SuccessAlert";
+import DividerWithText from "../utils/DividerWithText";
 
+/* new date picker implementation libraries */
+import DOBPicker from "./DOBPicker";
+import { Box, Typography } from "@mui/material";
 
 function AddVoter(){
     const navigate = useNavigate();
@@ -16,7 +20,7 @@ function AddVoter(){
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [gender, setGender] = useState("");
-    const [dob, setDob] = useState();
+    const [dob, setDob] = useState("");
     const [email, setEmail] = useState();
     const [mobile, setMobile] = useState();
     const [state, setState] = useState("");
@@ -25,6 +29,7 @@ function AddVoter(){
     const [selectedCity, setSelectedCity] = useState("");
     const [address1, setAddress1] = useState("");
     const [address2, setAddress2] = useState("");
+    const [pincode, setPincode] = useState("");
 
     const [firstNameError, setFirstNameError] = useState("");
     const [lastNameError, setLastNameError] = useState("");
@@ -33,6 +38,8 @@ function AddVoter(){
     const [invalidMobile, setInvalidMobile] = useState();
     const [emailError, setEmailError] = useState();
     const [address1Error, setAddress1Error] = useState("");
+    const [pincodeError, setPincodeError] = useState("");
+    const validatePincodeFormat = (value) => /^[1-9][0-9]{5}$/.test(value);
 
     const [isSuccess, setSuccess] = useState(false);
     
@@ -54,6 +61,9 @@ function AddVoter(){
         mobile: mobile,
         stateId: state,
         cityId: selectedCity,
+        address1: address1,
+        address2: address2,
+        pincode: pincode,       
       }
 
     const fetchStates = useCallback(() => {
@@ -76,10 +86,9 @@ function AddVoter(){
     }
 
     const handleValidation = (event) => {
-        dobSetter(); //set the date from child to parent component
+        //dobSetter(); //set the date from child to parent component
         setSuccess(false);
         let formIsValid = true;
-        
         var firstNameIsValid = validateFirstName();
         var lastNameIsValid = validateLastName();
         var genderIsValid = validateGender();
@@ -87,9 +96,10 @@ function AddVoter(){
         var emailIsValid = emailValidation();
         var mobileIsValid = phoneValidation();     
         var addressIsValid = validateAddress();
+        var pincodeIsValid = validatePincode();
 
         if(!firstNameIsValid || !lastNameIsValid || !genderIsValid || !dobIsValid 
-            || !emailIsValid || !mobileIsValid|| !addressIsValid){
+            || !emailIsValid || !mobileIsValid|| !addressIsValid || !pincodeIsValid){
                 formIsValid = false;
         }
 
@@ -98,6 +108,17 @@ function AddVoter(){
 
     function dobSetter(){
         data.dob = dobRef.current.getDob();
+    }
+
+    function validatePincode(){
+        var isPincodeValid = true;
+        if (!validatePincodeFormat(pincode)) {
+            setPincodeError("Invalid PIN code format. Please enter a 6-digit PIN code.");
+            isPincodeValid = false;
+          }else{
+            setPincodeError("");
+          }
+        return isPincodeValid;
     }
 
     function validateFirstName(){
@@ -125,7 +146,7 @@ function AddVoter(){
     }
 
     function validateDOB(){
-        var dob = dobRef.current.getDob()
+        //var dob = dobRef.current.getDob()
         var isDOBValid = true;
         if(dob === ''){
             setDobError("DOB is required");
@@ -204,6 +225,7 @@ function AddVoter(){
         setDobError("");
         setGenderError("");
         setAddress1Error("");
+        setPincodeError("");
 
         axios.post(
             addVoterURL, 
@@ -252,6 +274,10 @@ function AddVoter(){
         setSelectedCity(event.target.value);
     }
 
+    const handleDateChange = (date) => {
+        setDob(date);
+      };
+
     return(
         <div className="container">
                 <Header></Header>
@@ -285,9 +311,15 @@ function AddVoter(){
                         {address1Error}
                     </small> 
 
+                    <small id="addressErrorSection" className="text-danger form-text">
+                        {pincodeError}
+                    </small> 
+
                      { isSuccess && <SuccessAlert></SuccessAlert>}            
                     
                 </div>
+
+                <DividerWithText text="Personal Details"></DividerWithText>
 
                 <div className="row">
                     <div className="pt-1 col-3">First Name:<span style={{color:"red"}}>*</span> 
@@ -305,23 +337,6 @@ function AddVoter(){
                 </div>
 
                 <div className="row">
-                    <div className="pt-1 col-3">Gender:<span style={{color:"red"}}>*</span> </div>                   
-                    <div className="pt-1 col-3">
-                          <select type="select" id="gender" className="form-control" onChange={(event) => setGender(event.target.value)}>
-                              <option value="">Select Gender....</option>
-                              <option value="M">Male</option>
-                              <option value="F">Female</option>
-                              <option value="O">Other</option>
-                            </select> 
-                    </div>
-
-                    <div className="pt-1 col-3">Date of Birth:<span style={{color:"red"}}>*</span> </div>                   
-                    <div className="pt-1 col-3 form-group">
-                                <VoterDOB id="dobId" ref={dobRef}></VoterDOB>
-                    </div>    
-                </div>
-
-                <div className="row">
                     <div className="pt-1 col-3">Email:<span style={{color:"red"}}>*</span> </div>                   
                     <div className="pt-1 col-3">
                           <input type="email" id="email" className="form-control" autoComplete="off"
@@ -333,6 +348,32 @@ function AddVoter(){
                           onChange={(event) => setMobile(event.target.value)}/> 
                       </div> 
                 </div>
+
+                <div className="row">
+                    <div className="pt-1 col-3">Gender:<span style={{color:"red"}}>*</span> </div>                   
+                    <div className="pt-1 col-3">
+                          <select type="select" id="gender" className="form-control" onChange={(event) => setGender(event.target.value)}>
+                              <option value="">Select Gender....</option>
+                              <option value="M">Male</option>
+                              <option value="F">Female</option>
+                              <option value="O">Other</option>
+                            </select> 
+                    </div>
+                    
+                    {/*
+                    <div className="pt-1 col-3">Date of Birth:<span style={{color:"red"}}>*</span> </div>                   
+                    <div className="pt-1 col-3 form-group">
+                                <VoterDOB id="dobId" ref={dobRef}></VoterDOB>
+                    </div>
+                    */}
+                    <div className="pt-1 col-3">Date of Birth:<span style={{color:"red"}}>*</span> </div>
+                    <div className="pt-1 col-3 form-group">
+                        <DOBPicker value={dob} onChange={handleDateChange} />
+                    </div>
+
+                </div>               
+
+                <DividerWithText text="Address Section"></DividerWithText>
 
                 <div className="row">
                     <div className="pt-1 col-3">Address1:<span style={{color:"red"}}>*</span> </div>                   
@@ -379,6 +420,16 @@ function AddVoter(){
                             </select>
                       </div>
                                       
+                </div>
+                <div className="row">
+                    <div className="pt-1 col-3">Pincode:<span style={{color:"red"}}>*</span> </div>                   
+                    <div className="pt-1 col-3">
+                          <input type="pincode" id="pincode" className="form-control" autoComplete="off"
+                          onChange={(event) => setPincode(event.target.value)}/> 
+                      </div>
+                      <div className="pt-1 col-3"></div> 
+                      <div className="pt-1 col-3">
+                      </div>  
                 </div>
                 
                 <div className="row">
