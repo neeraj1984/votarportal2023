@@ -2,6 +2,8 @@ import axios from "axios";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import {useState,useEffect} from "react";
+import "../css/header.css";
+import Logo from "./Logo"
 
 function Header(){
     const navigate = useNavigate();
@@ -18,6 +20,7 @@ function Header(){
       axios.get(logoutURL,{headers:headers})
       .then((response) => {
           //alert(response.data);
+          //alert("test hello");
       })
       .catch(error => (console.log("error")) )
   }
@@ -40,9 +43,10 @@ function Header(){
 
     return(
            
-    <div className="row">
+    <div className="row headerColor header" >
+        <Logo></Logo>
         <div className="pt-1 col-8">
-            <h4> Welcome {user.username}</h4>                        
+            <h4> Welcome {user.username}</h4>                         
         </div>        
            
         <div className="pt-1 col-2">           
