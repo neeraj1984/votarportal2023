@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useMemo } from 'react';
 import '../App.css';
 import axios from 'axios';
 import { useTable,useFilters,usePagination} from 'react-table';
 import Header from "../user/header";
-
-{/* useMemo is a React Hook that lets you cache the result of a calculation between re-renders */}
 
 // Define a default UI for filtering
 function DefaultColumnFilter({
@@ -29,11 +27,15 @@ const VoterList = () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
     const listVoterURL = "http://localhost:8080/voter/listAllVoters";
-    const headers = {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': true,
-        Authorization: "Bearer " + user.accessToken
-      }
+    
+    // Memoize headers to avoid unnecessary re-creation on each render
+    const headers = useMemo(() => {
+        return {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': true,
+            Authorization: `Bearer ${user.accessToken}`,
+        };
+    }, [user.accessToken]); // Recreate headers only when user.accessToken changes
 
     const [data, setData] = useState([]);
 
@@ -45,7 +47,7 @@ const VoterList = () => {
             .catch(error => {
                 console.error('Error fetching voter data:', error);
             });
-    }, []);
+    }, [headers]); // Re-run effect if 'headers' changes
 
     const columns = React.useMemo(
         () => [
